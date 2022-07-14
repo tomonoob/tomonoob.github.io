@@ -1,3 +1,5 @@
+console.log('sirvo')
+
 var canvas = document.getElementById("scanvas");
 var cx = canvas.getContext("2d");
 
