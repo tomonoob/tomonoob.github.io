@@ -5,7 +5,7 @@ var cx = canvas.getContext("2d");
 
 const keys = {"LEFT": 37, "RIGHT": 39, "UP": 38, "DOWN": 40};
 
-
+crearCuadricula()
 
 
 
