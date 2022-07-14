@@ -8,44 +8,36 @@ const keys = {"LEFT": 37, "RIGHT": 39, "UP": 38, "DOWN": 40};
 
 
 
-//20
-let a = canvas.width / 20;
 
-let x, y = a;
-for (let i = 1; i <= 20; i++) {
-    drawLine('#ffffff', a,  0, a, canvas.width, 2)
-    a += a
+
+
+function dibujarPunto() {
+    // quedo aquí
 }
 
+function crearCuadricula() {
+    const numeroDeLineas = 30;
+    const anchoDeLinea = 1;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    let lineX = canvas.width / numeroDeLineas;
+    let a = lineX;
+    let lineY = canvas.height / 15;
+    let b = lineY;
+    
+    for (let i = 1; i <= numeroDeLineas; i++) {
+        // vertical
+        drawLine('#ffffff', a,  0, a, canvas.height, anchoDeLinea)
+        a += lineX
+    
+        // horizontal
+        // si, ya se que hay la mitad del numero de lineas
+        drawLine('#ffffff', 0,  b, canvas.width, b, anchoDeLinea)
+        b += lineY
+    }
+}
 
 /**
- * Create a line on the canvas from position xy to position x2y2
+ * Create lineX line on the canvas from position xy to position x2y2
  * @param {string} color - Color of the line
  * @param {number} x1 - the position in x where the line will start
  * @param {number} y1 - the position in y where the line will start
