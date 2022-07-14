@@ -13,7 +13,8 @@ let a = canvas.width / 20;
 
 let x, y = a;
 for (let i = 1; i <= 20; i++) {
-    drawLine('#ffffff', a,  0, a, canvas.width)
+    drawLine('#ffffff', a,  0, a, canvas.width, 2)
+    a += a
 }
 
 
