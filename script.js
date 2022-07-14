@@ -8,6 +8,41 @@ const keys = {"LEFT": 37, "RIGHT": 39, "UP": 38, "DOWN": 40};
 
 
 
+//20
+let a = canvas.width / 20;
+
+let x, y = a;
+for (let i = 1; i <= 20; i++) {
+    drawLine('#ffffff', a,  0, a, canvas.width)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Create a line on the canvas from position xy to position x2y2
  * @param {string} color - Color of the line
