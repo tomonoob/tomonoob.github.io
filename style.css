@@ -3,4 +3,5 @@ canvas {
     display: inline-block;
     width:90%;
     margin: 0 2%;
+    border: 2px solid #000000;
 }
