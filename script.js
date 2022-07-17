@@ -3,16 +3,102 @@ console.log("sirvo");
 var canvas = document.getElementById("scanvas");
 var cx = canvas.getContext("2d");
 
-const keys = { LEFT: 37, RIGHT: 39, UP: 38, DOWN: 40 };
-
 const numeroDeLineas = 30;
 const numeroDeLineasY = 15;
 const lineX = canvas.width / numeroDeLineas;
 const lineY = canvas.height / numeroDeLineasY;
 
-crearCuadricula();
-// dibujarPunto()
+let actualKey = "ArrowRight";
+let intervalo = undefined;
+let tails = []
+let route = [{x: 1, y: 1}];
 
+let bugFix = undefined;
+
+start()
+
+function createTail() {
+  tails.push(route[route.length-tails.length-1])
+}
+
+function start() {
+  let snake = {
+    x: 1,
+    y: 1,
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (
+      (e.key === "ArrowRight" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowUp" ||
+        e.key === "ArrowDown") &&
+      e.key != actualKey
+    ) {
+      if (
+        (e.key === "ArrowRight" && actualKey != "ArrowLeft") ||
+        (e.key === "ArrowLeft" && actualKey != "ArrowRight") ||
+        (e.key === "ArrowUp" && actualKey != "ArrowDown") ||
+        (e.key === "ArrowDown" && actualKey != "ArrowUp")
+      ) {
+        actualKey = e.key;
+      }
+    }
+  });
+
+  intervalo = setInterval(() => {
+    resetCanvas();
+    crearCuadricula();
+
+    switch (actualKey) {
+      case "ArrowRight":
+        snake.x++;
+        break;
+      case "ArrowLeft":
+        snake.x--;
+        break;
+      case "ArrowUp":
+        snake.y--;
+        break;
+      case "ArrowDown":
+        snake.y++;
+        break;
+      default:
+        alert('que paso??????????????')
+    }
+    if (snake.y > numeroDeLineasY || snake.y <= 0 || snake.x > numeroDeLineas || snake.x <= 0) {
+      gameOver();
+    }
+    
+    dibujarPunto(snake.x, snake.y, "#55ff55");
+    route.push({x: snake.x, y: snake.y});
+
+    // if (route.length > tails.length) {
+    //   route.shift;
+    // }
+
+    let tn = 0;
+    tails.forEach(tail => {
+      dibujarPunto(route[route.length-tn-2].x, route[route.length-tn-2].y, '#aaffaa')
+      tn++
+    })
+  }, 180);
+}
+
+function gameOver() {
+  alert('Game over');
+  clearInterval(intervalo);
+}
+
+// crearCuadricula();
+// dibujarPunto(1, 1, 'red')
+
+/**
+ * Dibuja en un punto x y de la cuadrilla especificado
+ * @param {number} x - posicion en el eje x de la cuadrilla
+ * @param {number} y - posicion en el eje y de la cuadrilla
+ * @param {string} color - color del punto
+ */
 function dibujarPunto(x, y, color) {
   // ejemplos que utilize para enterderlo:
   // // 1
@@ -36,34 +122,36 @@ function dibujarPunto(x, y, color) {
     color,
     lineX * (x - 1) + 1,
     (lineY / 2) * (y + (y - 1)),
-    lineX * (x - 1 + 1) - 1,
+    lineX * x - 1,
     (lineY / 2) * (y + (y - 1)),
     8
   );
 }
 
 function crearCuadricula() {
-  const anchoDeLinea = 1;
+  const anchoDeLinea = 0.01;
 
-  let a = lineX;
-  let b = lineY;
+  for (let i = 1; i <= 10; i++) {
+    let a = lineX;
+    let b = lineY;
 
-  for (let i = 1; i <= numeroDeLineas; i++) {
-    // vertical
-    drawLine("#ffffff", a, 0, a, canvas.height, anchoDeLinea);
-    a += lineX;
+    for (let i = 1; i <= numeroDeLineas; i++) {
+      // vertical
+      drawLine("#ffffff", a, 0, a, canvas.height, anchoDeLinea);
+      a += lineX;
 
-    // horizontal
-    // si, ya se que hay la mitad del numero de lineas
-    drawLine("#ffffff", 0, b, canvas.width, b, anchoDeLinea);
-    b += lineY;
+      // horizontal
+      // si, ya se que hay la mitad del numero de lineas
+      drawLine("#ffffff", 0, b, canvas.width, b, anchoDeLinea);
+      b += lineY;
+    }
+
+    // para completar, que no se puso a la izquierda ni arriba
+    //izquierda
+    drawLine("#ffffff", 0, 0, 0, canvas.height, anchoDeLinea);
+    //arriba
+    drawLine("#ffffff", 0, 0, canvas.width, 0, anchoDeLinea);
   }
-
-  // para completar, que no se puso a la izquierda ni arriba
-  //izquierda
-  drawLine("#ffffff", 0, 0, 0, canvas.height, anchoDeLinea);
-  //arriba
-  drawLine("#ffffff", 0, 0, canvas.width, 0, anchoDeLinea);
 }
 
 /**
@@ -86,8 +174,12 @@ function drawLine(color, x1, y1, x2, y2, lineWidth = 9) {
 }
 
 /**
- * restart the canvas content (the lines and images)
+ * Quita todo el contenido que haya dentro del canvas
  */
 function resetCanvas() {
-  canvas.width = canvas.width;
+  canvas.width = canvas.width; // esta es una manera de resetear el canvas
+}
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
