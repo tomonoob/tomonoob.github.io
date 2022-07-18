@@ -3,6 +3,8 @@ console.log("sirvo");
 var canvas = document.getElementById("scanvas");
 var cx = canvas.getContext("2d");
 
+var avisoxd = document.getElementById('aviso');
+
 const numeroDeLineas = 30;
 const numeroDeLineasY = 15;
 const lineX = canvas.width / numeroDeLineas;
@@ -12,11 +14,20 @@ let actualKey = "ArrowRight";
 let intervalo = undefined;
 let tails = [];
 let route = [{ x: 1, y: 1 }];
-let food = {}
+let food = {};
 
-let bugFix = undefined;
+// Habia un bug y era que podias ir al lado contrario, pulsando rapidamente un boton que no era el lado contrario y despues el boton que era el lado contrario que tenia, por ejemplo: si hibas a la derecha, pulsabas rapidamente arriba y despues a la izquierda, podias ir al lado contrario del que hibas (izquierda) en este caso sin subir (osea en el mismo eje Y podias cambiar al lado contrario de la direccion que hibas). esto aveces causaba que, como te traspasabas a ti mismo, te chocaras con la cola que hiba detras tuyo y perdiaras.
+let bugFix = "ArrowRight";
 
-start();
+let empezado = false;
+avisoxd.innerHTML = 'Presiona cualquier tecla para empezar'
+document.addEventListener('keyup', () => {
+  if (!empezado) {
+    avisoxd.innerHTML = '';
+    start();
+    empezado = true;
+  }
+})
 
 function createTail() {
   tails.push([]);
@@ -25,8 +36,8 @@ function createTail() {
 function createFood() {
   food = {
     x: getRndInteger(1, numeroDeLineas),
-    y: getRndInteger(1, numeroDeLineasY)
-  }
+    y: getRndInteger(1, numeroDeLineasY),
+  };
 }
 
 function start() {
@@ -49,7 +60,7 @@ function start() {
         (e.key === "ArrowUp" && actualKey != "ArrowDown") ||
         (e.key === "ArrowDown" && actualKey != "ArrowUp")
       ) {
-        actualKey = e.key;
+        bugFix = e.key;
       }
     }
   });
@@ -59,6 +70,8 @@ function start() {
   intervalo = setInterval(() => {
     resetCanvas();
     crearCuadricula();
+
+    actualKey = bugFix;
 
     switch (actualKey) {
       case "ArrowRight":
@@ -95,11 +108,14 @@ function start() {
     // colas
     let tn = 0;
     tails.forEach((tail) => {
-      dibujarPunto(
-        route[route.length - tn - 2].x,
-        route[route.length - tn - 2].y,
-        "#aaffaa"
-      );
+      let tailx = route[route.length - tn - 2].x;
+      let taily = route[route.length - tn - 2].y;
+
+      if (snake.x == tailx && snake.y == taily) {
+        gameOver();
+      }
+
+      dibujarPunto(tailx, taily, "#aaffaa");
       tn++;
     });
 
@@ -109,13 +125,26 @@ function start() {
       createTail();
       createFood();
     }
-    dibujarPunto(food.x, food.y, '#ff0000')
+    dibujarPunto(food.x, food.y, "#ff0000");
   }, 160);
 }
 
 function gameOver() {
-  alert("Game over");
   clearInterval(intervalo);
+  alert("Game over");
+
+  resetCanvas();
+
+  let reintentar = confirm('Deseas reintentarlo?');
+  
+  if (reintentar) {
+    tails = [];
+    food = {}
+    route = [{ x: 1, y: 1 }];
+    actualKey = "ArrowRight";
+    bugFix = "ArrowRight";
+    start();
+  }
 }
 
 // crearCuadricula();

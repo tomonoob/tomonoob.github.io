@@ -5,3 +5,7 @@ canvas {
     margin: 0 2%;
     border: 2px solid #000000;
 }
+
+#aviso {
+    text-align: center;
+}
