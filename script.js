@@ -10,15 +10,23 @@ const lineY = canvas.height / numeroDeLineasY;
 
 let actualKey = "ArrowRight";
 let intervalo = undefined;
-let tails = []
-let route = [{x: 1, y: 1}];
+let tails = [];
+let route = [{ x: 1, y: 1 }];
+let food = {}
 
 let bugFix = undefined;
 
-start()
+start();
 
 function createTail() {
-  tails.push(route[route.length-tails.length-1])
+  tails.push([]);
+}
+
+function createFood() {
+  food = {
+    x: getRndInteger(1, numeroDeLineas),
+    y: getRndInteger(1, numeroDeLineasY)
+  }
 }
 
 function start() {
@@ -46,6 +54,8 @@ function start() {
     }
   });
 
+  createFood();
+
   intervalo = setInterval(() => {
     resetCanvas();
     crearCuadricula();
@@ -64,29 +74,47 @@ function start() {
         snake.y++;
         break;
       default:
-        alert('que paso??????????????')
+        alert("que paso??????????????");
     }
-    if (snake.y > numeroDeLineasY || snake.y <= 0 || snake.x > numeroDeLineas || snake.x <= 0) {
+    if (
+      snake.y > numeroDeLineasY ||
+      snake.y <= 0 ||
+      snake.x > numeroDeLineas ||
+      snake.x <= 0
+    ) {
       gameOver();
     }
-    
+
     dibujarPunto(snake.x, snake.y, "#55ff55");
-    route.push({x: snake.x, y: snake.y});
+    route.push({ x: snake.x, y: snake.y });
 
     // if (route.length > tails.length) {
     //   route.shift;
     // }
 
+    // colas
     let tn = 0;
-    tails.forEach(tail => {
-      dibujarPunto(route[route.length-tn-2].x, route[route.length-tn-2].y, '#aaffaa')
-      tn++
-    })
-  }, 180);
+    tails.forEach((tail) => {
+      dibujarPunto(
+        route[route.length - tn - 2].x,
+        route[route.length - tn - 2].y,
+        "#aaffaa"
+      );
+      tn++;
+    });
+
+    //comida
+
+    if (snake.x === food.x && snake.y === food.y) {
+      createTail();
+      createFood();
+    }
+    dibujarPunto(food.x, food.y, '#ff0000')
+  }, 160);
 }
 
 function gameOver() {
-  alert('Game over');
+  alert("Game over");
   clearInterval(intervalo);
 }
 
@@ -181,5 +209,5 @@ function resetCanvas() {
 }
 
 function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) ) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
