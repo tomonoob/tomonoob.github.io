@@ -4,6 +4,7 @@ var canvas = document.getElementById("scanvas");
 var cx = canvas.getContext("2d");
 
 var avisoxd = document.getElementById('aviso');
+var pointCounter = document.getElementById('point');
 
 const numeroDeLineas = 30;
 const numeroDeLineasY = 15;
@@ -21,6 +22,9 @@ let bugFix = "ArrowRight";
 
 let empezado = false;
 avisoxd.innerHTML = 'Presiona cualquier tecla para empezar'
+
+let points = 0;
+
 document.addEventListener('keyup', () => {
   if (!empezado) {
     avisoxd.innerHTML = '';
@@ -124,8 +128,12 @@ function start() {
     if (snake.x === food.x && snake.y === food.y) {
       createTail();
       createFood();
+      points++;
+      pointCounter.innerHTML = points;
     }
     dibujarPunto(food.x, food.y, "#ff0000");
+
+
   }, 160);
 }
 
@@ -143,6 +151,8 @@ function gameOver() {
     route = [{ x: 1, y: 1 }];
     actualKey = "ArrowRight";
     bugFix = "ArrowRight";
+    points = 0;
+    pointCounter.innerHTML = points;
     start();
   }
 }
